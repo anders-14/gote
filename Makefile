@@ -13,4 +13,8 @@ fmt:
 	@printf "[CMD] "
 	goimports -w -l .
 
-.PHONY: run fmt
+lint:
+	@printf "[CMD] "
+	golint ./...
+
+.PHONY: run fmt lint
