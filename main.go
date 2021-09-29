@@ -13,19 +13,13 @@ func ctrl(char byte) byte {
 
 func readChar(t *term.Term) (byte, error) {
 	var buf = []byte{'0'}
-	c := &buf[0]
 
 	_, err := t.Read(buf)
 	if err != nil {
 		return 0, err
 	}
 
-	switch *c {
-	case ctrl('q'):
-		return 0, fmt.Errorf("program exit")
-	}
-
-	return *c, nil
+	return buf[0], nil
 }
 
 func handleKeypress(t *term.Term) error {
@@ -34,7 +28,13 @@ func handleKeypress(t *term.Term) error {
 		return err
 	}
 
-	fmt.Printf("%c\r\n", c)
+	switch c {
+	case ctrl('q'):
+		return fmt.Errorf("ctrl+q pressed, program exits")
+	default:
+		fmt.Printf("%c\r\n", c)
+		break
+	}
 
 	return nil
 }
@@ -45,11 +45,9 @@ func main() {
 	defer t.Restore()
 
 	for true {
-		err := handleKeypress(t)
-		if err != nil {
+		if err := handleKeypress(t); err != nil {
 			log.Printf("[ERR]: %+v\r\n", err)
 			break
 		}
 	}
-
 }
