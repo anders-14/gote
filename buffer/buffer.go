@@ -9,9 +9,10 @@ type Buffer struct {
 	Rows          [][]byte
 	x, y          int
 	width, height int
+	focus         bool
 }
 
-func New(x, y, width, height int) *Buffer {
+func New(x, y, width, height int, focus bool) *Buffer {
 	return &Buffer{
 		Cursor: cursor.New(height, width),
 		Rows:   [][]byte{},
@@ -19,6 +20,7 @@ func New(x, y, width, height int) *Buffer {
 		y:      y,
 		width:  width,
 		height: height,
+		focus:  focus,
 	}
 }
 
