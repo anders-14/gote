@@ -9,6 +9,8 @@ $(BIN): main.go
 	@printf "[CMD] "
 	go build -o bin
 
+all: fmt lint
+
 fmt:
 	@printf "[CMD] "
 	goimports -w -l .
@@ -17,4 +19,4 @@ lint:
 	@printf "[CMD] "
 	golint ./...
 
-.PHONY: run fmt lint
+.PHONY: run fmt lint all
