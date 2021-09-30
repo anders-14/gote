@@ -4,6 +4,10 @@ import (
 	"github.com/anders-14/gote/cursor"
 )
 
+// Buffer hold text to be displayed on screen
+// also keeps track of a cursor, the buffers
+// position on screen and if the buffer currently
+// is in focus
 type Buffer struct {
 	Cursor        *cursor.Cursor
 	Rows          [][]byte
@@ -12,6 +16,8 @@ type Buffer struct {
 	focus         bool
 }
 
+// New creates a new Buffer given its position, size and
+// if it should be focused by default
 func New(x, y, width, height int, focus bool) *Buffer {
 	return &Buffer{
 		Cursor: cursor.New(height, width),
@@ -24,6 +30,7 @@ func New(x, y, width, height int, focus bool) *Buffer {
 	}
 }
 
+// ToString converts Buffer.Rows to a string
 func (b *Buffer) ToString() string {
 	buf := ""
 
@@ -34,10 +41,13 @@ func (b *Buffer) ToString() string {
 	return buf
 }
 
-func (b *Buffer) AppendRow(row []byte) {
-	b.Rows = append(b.Rows, row)
+// AppendRow add a new row to the end of the Buffer
+// containing the given chars
+func (b *Buffer) AppendRow(chars []byte) {
+	b.Rows = append(b.Rows, chars)
 }
 
+// Insert inserts char at Buffer.rows[rowIdx][colIdx]
 func (b *Buffer) Insert(char byte, rowIdx, colIdx int) {
 	if rowIdx >= len(b.Rows) {
 		return

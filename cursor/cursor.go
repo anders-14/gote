@@ -1,5 +1,6 @@
 package cursor
 
+// Directions to be used with Cursor
 const (
 	UP = iota
 	DOWN
@@ -7,11 +8,13 @@ const (
 	RIGHT
 )
 
+// Cursor keeps track of the cursor position and bounds
 type Cursor struct {
 	X, Y       int
 	xmax, ymax int
 }
 
+// New creates a new Cursor given Buffer size in rows and col
 func New(rows, cols int) *Cursor {
 	return &Cursor{
 		X:    0,
@@ -36,6 +39,7 @@ func (c *Cursor) canMove(dir int) bool {
 	return false
 }
 
+// Move moves the cursor a given direction
 func (c *Cursor) Move(dir int) {
 	if c.canMove(dir) {
 		switch dir {
