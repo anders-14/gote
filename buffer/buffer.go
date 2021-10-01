@@ -1,6 +1,7 @@
 package buffer
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -18,20 +19,22 @@ type Buffer struct {
 	width, height int
 	focus         bool
 	saved         bool
+	filename      string
 }
 
 // New creates a new Buffer given its position, size and
 // if it should be focused by default
 func New(x, y, width, height int, focus bool) *Buffer {
 	return &Buffer{
-		Cursor: cursor.New(height, width),
-		Rows:   [][]byte{},
-		x:      x,
-		y:      y,
-		width:  width,
-		height: height,
-		focus:  focus,
-		saved:  false,
+		Cursor:   cursor.New(height, width),
+		Rows:     [][]byte{},
+		x:        x,
+		y:        y,
+		width:    width,
+		height:   height,
+		focus:    focus,
+		saved:    false,
+		filename: "",
 	}
 }
 
@@ -84,15 +87,21 @@ func (b *Buffer) OpenFile(filename string) error {
 		}
 
 		b.saved = true
+		b.filename = filename
 	}
 
 	return nil
 }
 
-// SaveFile saves the Buffer.Rows to a file given the name
-func (b *Buffer) SaveFile(filename string) error {
+// SaveFile saves the Buffer.Rows to a file
+func (b *Buffer) SaveFile() error {
+	if b.filename == "" {
+		// TODO: prompt for filename, for now dont save the file
+		return fmt.Errorf("no filename set, buffer not saved")
+	}
+
 	if !b.saved {
-		err := os.WriteFile(filename, []byte(b.ToString()), 0666)
+		err := os.WriteFile(b.filename, []byte(b.ToString()), 0666)
 		b.saved = true
 		return err
 	}
