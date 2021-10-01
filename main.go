@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/anders-14/gote/buffer"
+	"github.com/anders-14/gote/cursor"
 	"github.com/pkg/term"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -25,7 +26,7 @@ func readChar(t *term.Term) (byte, error) {
 	return buf[0], nil
 }
 
-func handleKeypress(t *term.Term) error {
+func handleKeypress(t *term.Term, buf *buffer.Buffer) error {
 	c, err := readChar(t)
 	if err != nil {
 		return err
@@ -34,12 +35,31 @@ func handleKeypress(t *term.Term) error {
 	switch c {
 	case ctrl('q'):
 		return fmt.Errorf("ctrl+q pressed, program exits")
+	case 'h':
+		buf.Cursor.Move(cursor.Left)
+		break
+	case 'j':
+		buf.Cursor.Move(cursor.Down)
+		break
+	case 'k':
+		buf.Cursor.Move(cursor.Up)
+		break
+	case 'l':
+		buf.Cursor.Move(cursor.Right)
+		break
 	default:
 		fmt.Printf("%c\r\n", c)
 		break
 	}
 
 	return nil
+}
+
+func draw(buf *buffer.Buffer) {
+	fmt.Printf("\x1b[2J")
+	fmt.Printf("\x1b[1;1H")
+	fmt.Printf(buf.ToString())
+	fmt.Printf("\x1b[%d;%dH", buf.Cursor.Y+1, buf.Cursor.X+1)
 }
 
 func main() {
@@ -54,16 +74,9 @@ func main() {
 
 	editor := buffer.New(0, 0, w, h, true)
 
-	editor.OpenFile("./test.txt")
-	fmt.Print(editor.ToString())
-
-	if err := editor.SaveFile(); err != nil {
-		log.Printf("[ERR]: %+v\r\n", err)
-		return
-	}
-
 	for true {
-		if err := handleKeypress(t); err != nil {
+		draw(editor)
+		if err := handleKeypress(t, editor); err != nil {
 			log.Printf("[ERR]: %+v\r\n", err)
 			return
 		}
