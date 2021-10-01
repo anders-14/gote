@@ -68,16 +68,22 @@ func (b *Buffer) Insert(char byte, rowIdx, colIdx int) {
 
 // OpenFile opens a file given the name and reads it into the buffer
 func (b *Buffer) OpenFile(filename string) error {
-	contents, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
+	if len(b.Rows) == 0 || b.saved {
+		b.Rows = nil
 
-	rows := strings.Split(string(contents), "\n")
-	for i, row := range rows {
-		if i != len(rows)-1 {
-			b.AppendRow([]byte(row))
+		contents, err := os.ReadFile(filename)
+		if err != nil {
+			return err
 		}
+
+		rows := strings.Split(string(contents), "\n")
+		for i, row := range rows {
+			if i != len(rows)-1 {
+				b.AppendRow([]byte(row))
+			}
+		}
+
+		b.saved = true
 	}
 
 	return nil
