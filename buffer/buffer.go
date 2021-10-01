@@ -1,6 +1,9 @@
 package buffer
 
 import (
+	"os"
+	"strings"
+
 	"github.com/anders-14/gote/cursor"
 )
 
@@ -59,4 +62,21 @@ func (b *Buffer) Insert(char byte, rowIdx, colIdx int) {
 	b.Rows[rowIdx] = append(b.Rows[rowIdx], 0)
 	copy(b.Rows[rowIdx][colIdx+1:], b.Rows[rowIdx][colIdx:])
 	b.Rows[rowIdx][colIdx] = char
+}
+
+// OpenFile opens a file given the name and reads it into the buffer
+func (b *Buffer) OpenFile(filename string) error {
+	contents, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	rows := strings.Split(string(contents), "\n")
+	for i, row := range rows {
+		if i != len(rows)-1 {
+			b.AppendRow([]byte(row))
+		}
+	}
+
+	return nil
 }

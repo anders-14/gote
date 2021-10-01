@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/anders-14/gote/buffer"
 	"github.com/pkg/term"
 )
 
@@ -43,6 +44,10 @@ func main() {
 	t, _ := term.Open("/dev/tty")
 	t.SetRaw()
 	defer t.Restore()
+
+	editor := buffer.New(0, 0, 10, 10, true)
+	editor.OpenFile("./main.go")
+	fmt.Print(editor.ToString())
 
 	for true {
 		if err := handleKeypress(t); err != nil {
