@@ -2,10 +2,10 @@ package cursor
 
 // Directions to be used with Cursor
 const (
-	UP = iota
-	DOWN
-	LEFT
-	RIGHT
+	Up = iota
+	Down
+	Left
+	Right
 )
 
 // Cursor keeps track of the cursor position and bounds
@@ -26,13 +26,13 @@ func New(rows, cols int) *Cursor {
 
 func (c *Cursor) canMove(dir int) bool {
 	switch dir {
-	case UP:
+	case Up:
 		return c.Y > 0
-	case DOWN:
+	case Down:
 		return c.Y < c.ymax
-	case LEFT:
+	case Left:
 		return c.X > 0
-	case RIGHT:
+	case Right:
 		return c.X < c.xmax
 	}
 
@@ -43,16 +43,16 @@ func (c *Cursor) canMove(dir int) bool {
 func (c *Cursor) Move(dir int) {
 	if c.canMove(dir) {
 		switch dir {
-		case UP:
+		case Up:
 			c.Y--
 			break
-		case DOWN:
+		case Down:
 			c.Y++
 			break
-		case LEFT:
+		case Left:
 			c.X--
 			break
-		case RIGHT:
+		case Right:
 			c.X++
 			break
 		}
