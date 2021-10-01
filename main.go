@@ -74,6 +74,13 @@ func main() {
 
 	editor := buffer.New(0, 0, w, h, true)
 
+	if len(os.Args) >= 2 {
+		if err := editor.OpenFile(os.Args[1]); err != nil {
+			log.Printf("[ERR]: %+v\r\n", err)
+			return
+		}
+	}
+
 	for true {
 		draw(editor)
 		if err := handleKeypress(t, editor); err != nil {
