@@ -46,7 +46,9 @@ func main() {
 	defer t.Restore()
 
 	editor := buffer.New(0, 0, 10, 10, true)
-	editor.OpenFile("./main.go")
+	editor.AppendRow([]byte("HEI"))
+	editor.SaveFile("test.txt")
+	//editor.OpenFile("./main.go")
 	fmt.Print(editor.ToString())
 
 	for true {

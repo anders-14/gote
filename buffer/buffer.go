@@ -17,6 +17,7 @@ type Buffer struct {
 	x, y          int
 	width, height int
 	focus         bool
+	saved         bool
 }
 
 // New creates a new Buffer given its position, size and
@@ -30,6 +31,7 @@ func New(x, y, width, height int, focus bool) *Buffer {
 		width:  width,
 		height: height,
 		focus:  focus,
+		saved:  false,
 	}
 }
 
@@ -76,6 +78,17 @@ func (b *Buffer) OpenFile(filename string) error {
 		if i != len(rows)-1 {
 			b.AppendRow([]byte(row))
 		}
+	}
+
+	return nil
+}
+
+// SaveFile saves the Buffer.Rows to a file given the name
+func (b *Buffer) SaveFile(filename string) error {
+	if !b.saved {
+		err := os.WriteFile(filename, []byte(b.ToString()), 0666)
+		b.saved = true
+		return err
 	}
 
 	return nil
