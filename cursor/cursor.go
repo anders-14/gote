@@ -1,8 +1,12 @@
 package cursor
 
+import "fmt"
+
+type direction int
+
 // Directions to be used with Cursor
 const (
-	Up = iota
+	Up direction = iota
 	Down
 	Left
 	Right
@@ -24,7 +28,7 @@ func New(rows, cols int) *Cursor {
 	}
 }
 
-func (c *Cursor) canMove(dir int) bool {
+func (c *Cursor) canMove(dir direction) bool {
 	switch dir {
 	case Up:
 		return c.Y > 0
@@ -40,7 +44,11 @@ func (c *Cursor) canMove(dir int) bool {
 }
 
 // Move moves the cursor a given direction
-func (c *Cursor) Move(dir int) {
+func (c *Cursor) Move(dir direction) error {
+	if dir < 0 || dir > 3 {
+		return fmt.Errorf("invalid direction: %d", dir)
+	}
+
 	if c.canMove(dir) {
 		switch dir {
 		case Up:
@@ -57,4 +65,6 @@ func (c *Cursor) Move(dir int) {
 			break
 		}
 	}
+
+	return nil
 }
