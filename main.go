@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/anders-14/gote/buffer"
 	"github.com/pkg/term"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func ctrl(char byte) byte {
@@ -44,17 +46,26 @@ func main() {
 	t, _ := term.Open("/dev/tty")
 	t.SetRaw()
 	defer t.Restore()
+	w, h, err := terminal.GetSize(int(os.Stdin.Fd()))
+	if err != nil {
+		log.Printf("[ERR]: %+v\r\n", err)
+		return
+	}
 
-	editor := buffer.New(0, 0, 10, 10, true)
-	editor.AppendRow([]byte("HEI"))
-	editor.SaveFile("test.txt")
-	//editor.OpenFile("./main.go")
+	editor := buffer.New(0, 0, w, h, true)
+
+	editor.OpenFile("./test.txt")
 	fmt.Print(editor.ToString())
+
+	if err := editor.SaveFile(); err != nil {
+		log.Printf("[ERR]: %+v\r\n", err)
+		return
+	}
 
 	for true {
 		if err := handleKeypress(t); err != nil {
 			log.Printf("[ERR]: %+v\r\n", err)
-			break
+			return
 		}
 	}
 }
